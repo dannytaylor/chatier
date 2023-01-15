@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cajlqfa3okmty"]
+
+[ext_resource type="Script" path="res://addons/ACVoicebox/ACVoicebox.gd" id="1_ti2u6"]
+
+[node name="ACVoicebox" type="AudioStreamPlayer3D"]
+script = ExtResource("1_ti2u6")

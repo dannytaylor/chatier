@@ -1,0 +1,132 @@
+[gd_scene load_steps=12 format=3 uid="uid://djt61xs2p6v1s"]
+
+[ext_resource type="Script" path="res://3d/peepo.gd" id="1_mbogq"]
+[ext_resource type="PackedScene" uid="uid://c426gnun7mp6v" path="res://3d/peepo.glb" id="2_4jh68"]
+[ext_resource type="AudioStream" uid="uid://wk6vmun5hmru" path="res://audio/03_Step_grass_03.wav" id="4_i0ydy"]
+[ext_resource type="Material" uid="uid://s37wedx6yff8" path="res://3d/orb_override.tres" id="4_qi11p"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xqnh4"]
+height = 1.5
+
+[sub_resource type="GDScript" id="GDScript_xsvah"]
+script/source = "extends NavigationAgent3D
+"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_37hox"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ixwda"]
+animation = &"run"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_b30wy"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_37hox")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_ixwda")
+blend_point_1/pos = 1.0
+min_space = 0.0
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_oh15a"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_xexm7"]
+graph_offset = Vector2(-277, 104)
+nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_b30wy")
+nodes/BlendSpace1D/position = Vector2(-20, 180)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_oh15a")
+nodes/TimeScale/position = Vector2(240, 160)
+nodes/output/position = Vector2(480, 180)
+node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"BlendSpace1D"]
+
+[node name="Peepo" type="CharacterBody3D" groups=["peepos"]]
+script = ExtResource("1_mbogq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_xqnh4")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+target_desired_distance = 3.0
+agent_height_offset = 0.5
+avoidance_enabled = true
+script = SubResource("GDScript_xsvah")
+
+[node name="walkingsound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_i0ydy")
+volume_db = -30.0
+unit_size = 20.0
+max_db = -12.0
+pitch_scale = 0.6
+max_distance = 20.0
+
+[node name="message_text" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+visible = false
+billboard = 1
+double_sided = false
+render_priority = 1
+font_size = 36
+vertical_alignment = 2
+autowrap_mode = 2
+width = 800.0
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="peepo" parent="." instance=ExtResource("2_4jh68")]
+
+[node name="Skeleton3D" parent="peepo/Armature" index="0"]
+bones/0/position = Vector3(0, 0.482372, -0.00295631)
+bones/1/rotation = Quaternion(-0.707119, -0.00502092, 0.706517, -0.028141)
+bones/2/rotation = Quaternion(0.0282577, -0.00116731, -0.0622829, 0.997658)
+bones/3/rotation = Quaternion(-0.116096, -0.111095, 0.616032, 0.771158)
+bones/4/rotation = Quaternion(-0.0368097, 0, 0, 0.999322)
+bones/5/rotation = Quaternion(0.185054, -1.30083e-16, -1.27201e-16, 0.982728)
+bones/6/rotation = Quaternion(0.707152, 0.000361074, 0.706695, 0.0227621)
+bones/7/rotation = Quaternion(0.0306696, 0.00110839, 0.0622812, 0.997587)
+bones/8/rotation = Quaternion(-0.132813, 0.100078, -0.618006, 0.768384)
+bones/9/position = Vector3(0.127596, 0.305972, 3.90558e-08)
+bones/9/rotation = Quaternion(-0.0226857, 0.0049358, -0.734473, 0.678241)
+bones/9/scale = Vector3(1.03009, 1.03009, 1.03009)
+bones/10/rotation = Quaternion(-0.0266432, 0.00593971, -0.341228, 0.939584)
+bones/11/rotation = Quaternion(0.050037, -0.00133207, -0.162011, 0.985519)
+bones/13/position = Vector3(-0.127596, 0.305972, 3.90558e-08)
+bones/13/rotation = Quaternion(-0.019462, -0.0091909, 0.751665, 0.659194)
+bones/13/scale = Vector3(1.03009, 1.03009, 1.03009)
+bones/14/rotation = Quaternion(-0.0253467, -0.00796157, 0.404379, 0.914206)
+bones/15/rotation = Quaternion(0.0485138, -0.00137427, 0.170836, 0.984103)
+
+[node name="ZZcape" parent="peepo/Armature/Skeleton3D" index="3"]
+visible = false
+
+[node name="ZZchestplate" parent="peepo/Armature/Skeleton3D" index="4"]
+visible = false
+
+[node name="ZZcloak" parent="peepo/Armature/Skeleton3D" index="5"]
+visible = false
+
+[node name="ZZdagger" parent="peepo/Armature/Skeleton3D" index="6"]
+visible = false
+
+[node name="ZZhat" parent="peepo/Armature/Skeleton3D" index="7"]
+visible = false
+
+[node name="ZZhelmet" parent="peepo/Armature/Skeleton3D" index="8"]
+visible = false
+
+[node name="ZZsword" parent="peepo/Armature/Skeleton3D" index="9"]
+visible = false
+
+[node name="ZZwand" parent="peepo/Armature/Skeleton3D" index="10"]
+visible = false
+surface_material_override/1 = ExtResource("4_qi11p")
+
+[node name="AnimationTree" type="AnimationTree" parent="peepo"]
+tree_root = SubResource("AnimationNodeBlendTree_xexm7")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/BlendSpace1D/blend_position = 0.0
+parameters/TimeScale/scale = 1.0
+
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+
+[editable path="peepo"]

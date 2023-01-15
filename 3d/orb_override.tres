@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://s37wedx6yff8"]
+
+[resource]
+resource_name = "orb"
+transparency = 1
+blend_mode = 1
+cull_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.905882, 0.905882, 0.905882, 0.286275)
+roughness = 0.5
+emission_enabled = true
+emission = Color(0.490196, 0.847059, 0.85098, 1)
+emission_energy_multiplier = 0.5
+subsurf_scatter_strength = 0.34
+refraction_enabled = true

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dbp5ghlsk3vyu"]
+
+[sub_resource type="GDScript" id="GDScript_gmaux"]
+script/source = "extends Node2D
+
+func _ready():
+	var pong = 'PONG\\r\\n'.to_utf8_buffer()
+	print(pong)
+	var pong_bytes = PackedByteArray(pong)
+"
+
+[node name="test" type="Node2D"]
+script = SubResource("GDScript_gmaux")

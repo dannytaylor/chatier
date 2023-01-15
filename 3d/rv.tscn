@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://b4b5hb4af2q0d"]
+
+[ext_resource type="PackedScene" uid="uid://5lgq5vm06uyb" path="res://3d/rv.glb" id="1_y300i"]
+[ext_resource type="AudioStream" uid="uid://d14s3vmbjbtoa" path="res://audio/music2_shindigs.wav" id="2_ghvre"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xecjs"]
+size = Vector3(5.35209, 2.167, 2.02882)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i5ndo"]
+size = Vector3(0.624391, 0.351795, 0.616741)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_im0f8"]
+size = Vector3(0.131848, 0.31033, 1.78064)
+
+[node name="rv" instance=ExtResource("1_y300i")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+collision_layer = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33259, 0)
+shape = SubResource("BoxShape3D_xecjs")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.92847, 2.43026, 0)
+shape = SubResource("BoxShape3D_i5ndo")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="StaticBody3D" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.739232, 2.43026, 0)
+shape = SubResource("BoxShape3D_i5ndo")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25757, 1.44489, 0.365378)
+shape = SubResource("BoxShape3D_im0f8")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25757, 1.61386, -0.337402)
+shape = SubResource("BoxShape3D_im0f8")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.57717, 0.998126, 0)
+stream = ExtResource("2_ghvre")
+volume_db = -32.0
+max_db = -18.0
+autoplay = true
+max_distance = 15.0

@@ -1,0 +1,169 @@
+[gd_scene load_steps=14 format=3 uid="uid://b1j6gwmwpdb3x"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_pt5ue"]
+[ext_resource type="AudioStream" uid="uid://wk6vmun5hmru" path="res://audio/03_Step_grass_03.wav" id="3_x58yh"]
+[ext_resource type="PackedScene" uid="uid://c426gnun7mp6v" path="res://3d/peepo.glb" id="4_3mwcp"]
+[ext_resource type="PackedScene" uid="uid://dom5rasqueer7" path="res://3d/shindigs_beans.glb" id="4_a2sr0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cu1c1"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6v0vh"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 20.0
+dof_blur_far_transition = 10.0
+dof_blur_near_enabled = true
+dof_blur_near_distance = 4.0
+dof_blur_near_transition = 2.0
+dof_blur_amount = 0.04
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0adml"]
+animation = &"stretch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l3nck"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6hrl4"]
+animation = &"run"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_14ilk"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_l3nck")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_6hrl4")
+blend_point_1/pos = 1.0
+min_space = 0.0
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_m28cy"]
+fadein_time = 0.25
+fadeout_time = 0.25
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_q87s8"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_md6jc"]
+graph_offset = Vector2(-684.63, -115)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_0adml")
+nodes/Animation/position = Vector2(420, 320)
+nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_14ilk")
+nodes/BlendSpace1D/position = Vector2(-40, 40)
+nodes/OneShot/node = SubResource("AnimationNodeOneShot_m28cy")
+nodes/OneShot/position = Vector2(620, 160)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_q87s8")
+nodes/TimeScale/position = Vector2(420, 140)
+nodes/output/position = Vector2(1340, -40)
+node_connections = [&"output", 0, &"OneShot", &"OneShot", 0, &"TimeScale", &"OneShot", 1, &"Animation", &"TimeScale", 0, &"BlendSpace1D"]
+
+[node name="player" type="CharacterBody3D"]
+script = ExtResource("1_pt5ue")
+
+[node name="AudioListener3D" type="AudioListener3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33532, 0)
+current = true
+
+[node name="PlayerCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00306, 0)
+shape = SubResource("CapsuleShape3D_cu1c1")
+
+[node name="SpringArmPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866026, 0.5, 0, -0.5, 0.866026, 0, 1.04178, 0)
+
+[node name="CameraSpringArm" type="SpringArm3D" parent="SpringArmPivot"]
+collision_mask = 2
+spring_length = 8.0
+margin = 1.0
+
+[node name="Camera3D" type="Camera3D" parent="SpringArmPivot/CameraSpringArm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+attributes = SubResource("CameraAttributesPractical_6v0vh")
+doppler_tracking = 2
+fov = 45.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_x58yh")
+
+[node name="shindigs" parent="." instance=ExtResource("4_a2sr0")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Skeleton3D" parent="shindigs/skeleton" index="0"]
+bones/0/position = Vector3(1.01519e-24, -0.0138664, 4.57203e-09)
+bones/0/rotation = Quaternion(0.01918, -1.29271e-26, -4.25882e-18, 0.999816)
+bones/1/rotation = Quaternion(-0.0578565, -2.51623e-18, 1.03419e-18, 0.998325)
+bones/2/rotation = Quaternion(0.0488769, -1.11208e-16, -1.40572e-16, 0.998805)
+bones/3/rotation = Quaternion(0.146558, 1.73002e-17, -1.14849e-17, 0.989202)
+bones/5/rotation = Quaternion(0.988576, -0.0776564, -0.114796, 0.0592321)
+bones/6/rotation = Quaternion(0.988645, 0.0733116, 0.116217, 0.0608285)
+bones/7/rotation = Quaternion(0.846508, 0.196064, 0.440502, -0.225701)
+bones/8/rotation = Quaternion(-0.0936164, -0.0841593, 0.0769511, 0.989056)
+bones/10/rotation = Quaternion(0.85035, -0.167492, -0.452694, -0.209571)
+bones/11/rotation = Quaternion(-0.0713777, 0.08136, -0.0501466, 0.99286)
+bones/13/rotation = Quaternion(0.993033, -4.21124e-08, -3.80457e-08, 0.11784)
+bones/14/rotation = Quaternion(0.169503, 0.0144467, -0.0113479, 0.985359)
+bones/15/rotation = Quaternion(0.641719, 0.443138, -0.497315, -0.380136)
+bones/16/rotation = Quaternion(0.993033, 4.21124e-08, 3.80457e-08, 0.11784)
+bones/17/rotation = Quaternion(0.169503, -0.0144467, 0.0113479, 0.985359)
+bones/18/rotation = Quaternion(0.641719, -0.443138, 0.497315, -0.380136)
+
+[node name="AnimationTree" type="AnimationTree" parent="shindigs"]
+tree_root = SubResource("AnimationNodeBlendTree_md6jc")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/BlendSpace1D/blend_position = 0.0
+parameters/OneShot/active = false
+parameters/TimeScale/scale = 1.0
+
+[node name="peepo" parent="." instance=ExtResource("4_3mwcp")]
+visible = false
+
+[node name="Skeleton3D" parent="peepo/Armature" index="0"]
+bones/0/position = Vector3(0, 0.481064, -0.0025825)
+bones/1/rotation = Quaternion(-0.707127, -0.00549012, 0.706399, -0.0306979)
+bones/2/rotation = Quaternion(0.0318033, -0.00113163, -0.0645704, 0.997406)
+bones/3/rotation = Quaternion(-0.117939, -0.109915, 0.617977, 0.769489)
+bones/4/rotation = Quaternion(-0.0321487, 0, 0, 0.999483)
+bones/5/rotation = Quaternion(0.183662, -1.29902e-16, -1.27385e-16, 0.982989)
+bones/6/rotation = Quaternion(0.707169, -0.000892397, 0.706562, 0.0261032)
+bones/7/rotation = Quaternion(0.0356345, 0.00103801, 0.0645669, 0.997276)
+bones/8/rotation = Quaternion(-0.132537, 0.10029, -0.619677, 0.767057)
+bones/9/position = Vector3(0.127174, 0.305972, 3.91181e-08)
+bones/9/rotation = Quaternion(-0.0146715, 6.69092e-05, -0.739383, 0.673126)
+bones/9/scale = Vector3(1.02628, 1.02628, 1.02628)
+bones/10/rotation = Quaternion(-0.0266432, 0.00593971, -0.341228, 0.939584)
+bones/11/rotation = Quaternion(0.0483954, -0.000449165, -0.169533, 0.984335)
+bones/13/position = Vector3(-0.127174, 0.305972, 3.91181e-08)
+bones/13/rotation = Quaternion(-0.013458, -0.0051073, 0.754288, 0.656386)
+bones/13/scale = Vector3(1.02628, 1.02628, 1.02628)
+bones/14/rotation = Quaternion(-0.0253467, -0.00796157, 0.404379, 0.914206)
+bones/15/rotation = Quaternion(0.0470591, -0.00192688, 0.177719, 0.982954)
+
+[node name="ZZcape" parent="peepo/Armature/Skeleton3D" index="3"]
+visible = false
+
+[node name="ZZchestplate" parent="peepo/Armature/Skeleton3D" index="4"]
+visible = false
+
+[node name="ZZcloak" parent="peepo/Armature/Skeleton3D" index="5"]
+visible = false
+
+[node name="ZZdagger" parent="peepo/Armature/Skeleton3D" index="6"]
+visible = false
+
+[node name="ZZhat" parent="peepo/Armature/Skeleton3D" index="7"]
+visible = false
+
+[node name="ZZhelmet" parent="peepo/Armature/Skeleton3D" index="8"]
+visible = false
+
+[node name="ZZsword" parent="peepo/Armature/Skeleton3D" index="9"]
+visible = false
+
+[node name="ZZwand" parent="peepo/Armature/Skeleton3D" index="10"]
+visible = false
+
+[node name="AnimationTree" type="AnimationTree" parent="peepo"]
+tree_root = SubResource("AnimationNodeBlendTree_md6jc")
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/BlendSpace1D/blend_position = 0.0
+parameters/OneShot/active = false
+parameters/TimeScale/scale = 1.0
+
+[editable path="shindigs"]
+[editable path="peepo"]

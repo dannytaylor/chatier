@@ -1,0 +1,74 @@
+[gd_scene load_steps=11 format=3 uid="uid://ddkq0hfwm2d8y"]
+
+[ext_resource type="PackedScene" uid="uid://cstu7lyf4yea8" path="res://3d/portapotty.glb" id="1_5dasm"]
+[ext_resource type="PackedScene" uid="uid://c8a31r8u2q03y" path="res://3d/duckflag.glb" id="2_5dol7"]
+[ext_resource type="PackedScene" uid="uid://c1alsa4yjlv4h" path="res://3d/starlink.glb" id="3_qw3tm"]
+[ext_resource type="Shader" path="res://3d/flag.gdshader" id="4_fa4ak"]
+[ext_resource type="Texture2D" uid="uid://bkkxfiqllp7sr" path="res://3d/textures/duckflag.jpg" id="5_igi8e"]
+[ext_resource type="AudioStream" uid="uid://dxkxr373jl03u" path="res://audio/music1_shindigs.mp3" id="6_jfl6s"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_14quf"]
+size = Vector3(1.71595, 1.68763, 1.87099)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6ycv0"]
+render_priority = 0
+shader = ExtResource("4_fa4ak")
+shader_parameter/speed = 2.0
+shader_parameter/frequency_y = 5.0
+shader_parameter/frequency_x = 2.5
+shader_parameter/frequency_z = 2.5
+shader_parameter/amplitude_y = 0.1
+shader_parameter/amplitude_x = 0.05
+shader_parameter/amplitude_z = 0.05
+shader_parameter/inclination = -0.04
+shader_parameter/tex = ExtResource("5_igi8e")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1xy6w"]
+lightmap_size_hint = Vector2i(12, 9)
+material = SubResource("ShaderMaterial_6ycv0")
+size = Vector2(1.6, 1.1)
+subdivide_width = 30
+subdivide_depth = 30
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5vbos"]
+size = Vector3(1.58998, 2.89782, 1.43974)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="starlink" parent="." instance=ExtResource("3_qw3tm")]
+transform = Transform3D(0.364382, 0, 0.409304, 0, 0.548, 0, -0.409304, 0, 0.364382, -2.12999, 0, 1.20244)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="starlink"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="starlink/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0302587, 0.6401, -3.57628e-07)
+shape = SubResource("BoxShape3D_14quf")
+
+[node name="gadsden" parent="." instance=ExtResource("2_5dol7")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 1.21018, 0, 0)
+
+[node name="gadsden" parent="gadsden" index="0"]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="gadsden"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.801652, 3.6532, 0)
+mesh = SubResource("PlaneMesh_1xy6w")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39552, 0)
+stream = ExtResource("6_jfl6s")
+volume_db = -32.0
+max_db = -21.0
+autoplay = true
+max_distance = 9.0
+
+[node name="portapotty2" parent="." instance=ExtResource("1_5dasm")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="portapotty2"]
+collision_layer = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty2/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0302588, 1.53521, 0)
+shape = SubResource("BoxShape3D_5vbos")
+
+[editable path="gadsden"]

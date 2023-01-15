@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ds8nn87udyyiq"]
+
+[resource]
+resource_name = "hoodie"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.0196078, 0.0196078, 0.0196078, 1)
+metallic = 0.2
+roughness = 0.7
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.2

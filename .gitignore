@@ -1,0 +1,7 @@
+# Godot 4+ specific ignores
+.godot/
+*.import
+
+audio/music1_shindigs.mp3
+
+audio/music2_shindigs.wav
