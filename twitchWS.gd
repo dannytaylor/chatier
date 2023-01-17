@@ -7,13 +7,13 @@ extends Node
 
 var tts_active = false
 
-var ip = "ws://irc-ws.chat.twitch.tv:80"
+@export var ip = "ws://irc-ws.chat.twitch.tv:80"
 
-var nick = "justinfan" + str(randi_range(1001,9999))
-var password = 'randomstring' # use oauth if not using readonly justinfan# login
+@export var nick = "justinfan" + str(randi_range(1001,9999))
+@export var password = 'randomstring' # use oauth if not using readonly justinfan# login
 #var nick = "xhiggy"
 #var password = 'oauth:ID' # use oauth if not using readonly justinfan# login
-var channel = "#xhiggy"
+@export var channel = "#xhiggy"
 
 var client
 var _login_sent = false
