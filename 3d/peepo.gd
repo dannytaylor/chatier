@@ -10,7 +10,7 @@ extends CharacterBody3D
 @onready var timer = $Timer
 
 var SPEED = 5.0
-var SAFE_DIST = 3.5
+var SAFE_DIST = 4.5
 var ACCEL = 0.25
 var LERP_VAL = 0.1
 var PHONEMES = 5 # manual update
