@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://2vhedajk13tf"]
+
+[ext_resource type="Script" path="res://scenes/portal.gd" id="1_wy1ix"]
+
+[sub_resource type="Gradient" id="Gradient_qew2u"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3jf1u"]
+gradient = SubResource("Gradient_qew2u")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8fyrn"]
+size = Vector3(2, 4, 1)
+
+[node name="Portal" type="Node3D" groups=["portal"]]
+script = ExtResource("1_wy1ix")
+
+[node name="PortalSprite" type="Sprite3D" parent="."]
+transparent = false
+double_sided = false
+texture = SubResource("GradientTexture2D_3jf1u")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(400, 800)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+fov = 60.0
+
+[node name="WarpZone" type="Area3D" parent="."]
+
+[node name="WarpShape" type="CollisionShape3D" parent="WarpZone"]
+shape = SubResource("BoxShape3D_8fyrn")
+
+[node name="CameraTransform" type="RemoteTransform3D" parent="."]
+remote_path = NodePath("../SubViewport/Camera3D")

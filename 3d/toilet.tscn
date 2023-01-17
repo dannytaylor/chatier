@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://ddkq0hfwm2d8y"]
+[gd_scene load_steps=15 format=3 uid="uid://ddkq0hfwm2d8y"]
 
 [ext_resource type="PackedScene" uid="uid://cstu7lyf4yea8" path="res://3d/portapotty.glb" id="1_5dasm"]
+[ext_resource type="Script" path="res://3d/toilet.gd" id="1_c8loj"]
 [ext_resource type="PackedScene" uid="uid://c8a31r8u2q03y" path="res://3d/duckflag.glb" id="2_5dol7"]
 [ext_resource type="PackedScene" uid="uid://c1alsa4yjlv4h" path="res://3d/starlink.glb" id="3_qw3tm"]
 [ext_resource type="Shader" path="res://3d/flag.gdshader" id="4_fa4ak"]
@@ -31,9 +32,19 @@ subdivide_width = 30
 subdivide_depth = 30
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5vbos"]
-size = Vector3(1.58998, 2.89782, 1.43974)
+size = Vector3(0.124611, 2.48081, 1.43974)
 
-[node name="Node3D" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_wyyqe"]
+size = Vector3(0.124611, 2.48081, 1.60533)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ijskq"]
+size = Vector3(1.47305, 0.259563, 1.61442)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_18a5n"]
+size = Vector3(9.38638, 2.26311, 7.15706)
+
+[node name="PortaPotty" type="Node3D"]
+script = ExtResource("1_c8loj")
 
 [node name="starlink" parent="." instance=ExtResource("3_qw3tm")]
 transform = Transform3D(0.364382, 0, 0.409304, 0, 0.548, 0, -0.409304, 0, 0.364382, -2.12999, 0, 1.20244)
@@ -62,13 +73,35 @@ max_db = -21.0
 autoplay = true
 max_distance = 9.0
 
-[node name="portapotty2" parent="." instance=ExtResource("1_5dasm")]
+[node name="portapotty" parent="." instance=ExtResource("1_5dasm")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="portapotty2"]
-collision_layer = 3
+[node name="StaticBody3D" type="StaticBody3D" parent="portapotty"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty2/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0302588, 1.53521, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.674154, 1.33666, 0)
 shape = SubResource("BoxShape3D_5vbos")
 
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.773033, 1.33666, 0)
+shape = SubResource("BoxShape3D_5vbos")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0278085, 1.33666, -0.670749)
+shape = SubResource("BoxShape3D_wyyqe")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0278085, 2.69824, 0.0699863)
+shape = SubResource("BoxShape3D_ijskq")
+
+[node name="DoorZone" type="Area3D" parent="portapotty"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.30297)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/DoorZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.480305, 1.20099, 1.86191)
+shape = SubResource("BoxShape3D_18a5n")
+
+[connection signal="body_entered" from="portapotty/DoorZone" to="." method="_on_door_zone_body_entered"]
+[connection signal="body_exited" from="portapotty/DoorZone" to="." method="_on_door_zone_body_exited"]
+
 [editable path="gadsden"]
+[editable path="portapotty"]
