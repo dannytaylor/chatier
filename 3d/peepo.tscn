@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://djt61xs2p6v1s"]
+[gd_scene load_steps=19 format=3 uid="uid://djt61xs2p6v1s"]
 
 [ext_resource type="Script" path="res://3d/peepo.gd" id="1_mbogq"]
 [ext_resource type="PackedScene" uid="uid://c426gnun7mp6v" path="res://3d/peepo.glb" id="2_4jh68"]
@@ -25,16 +25,51 @@ blend_point_1/node = SubResource("AnimationNodeAnimation_ixwda")
 blend_point_1/pos = 1.0
 min_space = 0.0
 
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_f82c4"]
+
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_oh15a"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8mxbi"]
+animation = &"gamba_idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dd4c5"]
+animation = &"gamba_pull"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_o3sbl"]
+fadein_time = 0.2
+fadeout_time = 0.2
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cii6a"]
+animation = &"gamba_win"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_kryl7"]
+fadein_time = 0.2
+fadeout_time = 0.2
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_1c5fi"]
+
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_xexm7"]
-graph_offset = Vector2(-277, 104)
+graph_offset = Vector2(-890.81, 69.05)
 nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_b30wy")
-nodes/BlendSpace1D/position = Vector2(-20, 180)
+nodes/BlendSpace1D/position = Vector2(-140, 0)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_oh15a")
-nodes/TimeScale/position = Vector2(240, 160)
-nodes/output/position = Vector2(480, 180)
-node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"BlendSpace1D"]
+nodes/TimeScale/position = Vector2(140, -60)
+"nodes/TimeScale 2/node" = SubResource("AnimationNodeTimeScale_f82c4")
+"nodes/TimeScale 2/position" = Vector2(-20, 520)
+nodes/gamba_idle/node = SubResource("AnimationNodeAnimation_8mxbi")
+nodes/gamba_idle/position = Vector2(-420, 160)
+nodes/gamba_pull/node = SubResource("AnimationNodeAnimation_dd4c5")
+nodes/gamba_pull/position = Vector2(-340, 320)
+nodes/gamba_pull_shot/node = SubResource("AnimationNodeOneShot_o3sbl")
+nodes/gamba_pull_shot/position = Vector2(-100, 220)
+nodes/gamba_win/node = SubResource("AnimationNodeAnimation_cii6a")
+nodes/gamba_win/position = Vector2(-280, 600)
+nodes/gamba_win_shot/node = SubResource("AnimationNodeOneShot_kryl7")
+nodes/gamba_win_shot/position = Vector2(180, 320)
+nodes/output/position = Vector2(680, 40)
+nodes/state/node = SubResource("AnimationNodeBlend2_1c5fi")
+nodes/state/position = Vector2(440, 40)
+node_connections = [&"output", 0, &"state", &"TimeScale", 0, &"BlendSpace1D", &"TimeScale 2", 0, &"gamba_win", &"gamba_pull_shot", 0, &"gamba_idle", &"gamba_pull_shot", 1, &"gamba_pull", &"gamba_win_shot", 0, &"gamba_pull_shot", &"gamba_win_shot", 1, &"TimeScale 2", &"state", 0, &"TimeScale", &"state", 1, &"gamba_win_shot"]
 
 [node name="Peepo" type="CharacterBody3D" groups=["peepos"]]
 script = ExtResource("1_mbogq")
@@ -74,25 +109,28 @@ one_shot = true
 [node name="peepo" parent="." instance=ExtResource("2_4jh68")]
 
 [node name="Skeleton3D" parent="peepo/Armature" index="0"]
-bones/0/position = Vector3(2.0778e-18, 0.483574, -0.0032997)
-bones/1/rotation = Quaternion(-0.707108, -0.0046281, 0.706612, -0.0260004)
-bones/2/rotation = Quaternion(0.0238268, -0.00121187, -0.0594231, 0.997948)
-bones/3/rotation = Quaternion(-0.114073, -0.112386, 0.613891, 0.772978)
-bones/4/rotation = Quaternion(-0.0426325, -2.70481e-26, 9.93201e-18, 0.999091)
-bones/5/rotation = Quaternion(0.185778, -1.28029e-16, -1.3178e-16, 0.982592)
-bones/6/rotation = Quaternion(0.707123, 0.00173591, 0.706831, 0.0190972)
-bones/7/rotation = Quaternion(0.0244651, 0.00119628, 0.0594228, 0.997932)
-bones/8/rotation = Quaternion(-0.133046, 0.099897, -0.616584, 0.769509)
-bones/9/position = Vector3(0.126941, 0.305972, 3.94724e-08)
-bones/9/rotation = Quaternion(-0.0326868, 0.0110135, -0.728201, 0.684495)
-bones/9/scale = Vector3(1.03485, 1.03485, 1.03485)
-bones/10/rotation = Quaternion(-0.0266432, 0.00593971, -0.341228, 0.939584)
-bones/11/rotation = Quaternion(0.0520833, -0.00243482, -0.152601, 0.986911)
-bones/13/position = Vector3(-0.126941, 0.305972, 3.94724e-08)
-bones/13/rotation = Quaternion(-0.0269596, -0.0142908, 0.748316, 0.66264)
-bones/13/scale = Vector3(1.03485, 1.03485, 1.03485)
-bones/14/rotation = Quaternion(-0.0253467, -0.00796157, 0.404379, 0.914206)
-bones/15/rotation = Quaternion(0.0503275, -0.000683826, 0.162225, 0.985469)
+bones/0/position = Vector3(0, 0.482628, -0.00302919)
+bones/1/rotation = Quaternion(-0.707117, -0.00492502, 0.70654, -0.0276184)
+bones/2/rotation = Quaternion(0.0275331, -0.0011746, -0.0618152, 0.997707)
+bones/3/rotation = Quaternion(-0.115719, -0.111335, 0.615634, 0.771498)
+bones/4/rotation = Quaternion(-0.0377622, 0, 0, 0.999287)
+bones/5/rotation = Quaternion(0.185352, -1.30121e-16, -1.27162e-16, 0.982672)
+bones/7/rotation = Quaternion(-0.604805, 9.73505e-13, 1.58616e-06, 0.796374)
+bones/9/rotation = Quaternion(-0.604805, -9.73505e-13, -1.58616e-06, 0.796374)
+bones/9/scale = Vector3(1.01751, 1.01751, 1.01751)
+bones/10/rotation = Quaternion(0.707148, 0.000617262, 0.706721, 0.0220793)
+bones/11/rotation = Quaternion(0.0296548, 0.00112277, 0.0618138, 0.997647)
+bones/12/rotation = Quaternion(-0.132867, 0.100036, -0.617679, 0.768643)
+bones/13/position = Vector3(0.127566, 0.305972, 3.90752e-08)
+bones/13/rotation = Quaternion(-0.0243227, 0.00593045, -0.733457, 0.679274)
+bones/13/scale = Vector3(1.03087, 1.03087, 1.03087)
+bones/14/rotation = Quaternion(-0.0266432, 0.00593971, -0.341228, 0.939584)
+bones/15/rotation = Quaternion(0.0503721, -0.00151248, -0.160473, 0.985753)
+bones/17/position = Vector3(-0.127566, 0.305972, 3.90752e-08)
+bones/17/rotation = Quaternion(-0.0206887, -0.0100253, 0.751122, 0.659763)
+bones/17/scale = Vector3(1.03087, 1.03087, 1.03087)
+bones/18/rotation = Quaternion(-0.0253467, -0.00796157, 0.404379, 0.914206)
+bones/19/rotation = Quaternion(0.0488107, -0.00126133, 0.169428, 0.984332)
 
 [node name="ZZcape" parent="peepo/Armature/Skeleton3D" index="3"]
 visible = false
@@ -125,6 +163,10 @@ anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/BlendSpace1D/blend_position = 0.0
 parameters/TimeScale/scale = 1.0
+"parameters/TimeScale 2/scale" = 1.0
+parameters/gamba_pull_shot/active = false
+parameters/gamba_win_shot/active = false
+parameters/state/blend_amount = 0.0
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

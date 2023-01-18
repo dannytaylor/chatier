@@ -9,6 +9,10 @@ extends CharacterBody3D
 @onready var model = $peepo
 @onready var timer = $Timer
 
+enum {FOLLOW,GAMBA}
+var state = FOLLOW
+
+
 var SPEED = 5.0
 var SAFE_DIST = 4.5
 var ACCEL = 0.25
@@ -33,26 +37,28 @@ func _ready():
 	timer.wait_time = wait_time
  
 func _physics_process(delta):
-	var current_location = global_transform.origin
-	var next_location = nav_agent.get_next_location()
 	
-	var new_velocity = (next_location - current_location).normalized()*SPEED
-	
-	if nav_agent.distance_to_target() < SAFE_DIST:
-		new_velocity = velocity.move_toward(Vector3(0,0,0),ACCEL)
-		var direction = (next_location - current_location).normalized()
-		rotation.y = lerp_angle(rotation.y, atan2(direction.x,direction.z), LERP_VAL)
-		if sfx.playing:
-			sfx.stop()
-	else:
-		new_velocity = velocity.move_toward(new_velocity,ACCEL)
-		rotation.y = lerp_angle(rotation.y, atan2(velocity.x,velocity.z), LERP_VAL)
-		if not sfx.playing or velocity.length() < 0.5:
-			sfx.play()
-	nav_agent.set_velocity(new_velocity)
-	
-	animtree.set("parameters/TimeScale/scale",1+speed_scale*new_velocity.length()/SPEED)
-	animtree.set("parameters/BlendSpace1D/blend_position",new_velocity.length()/SPEED)
+	if state == FOLLOW:
+		var current_location = global_transform.origin
+		var next_location = nav_agent.get_next_location()
+		
+		var new_velocity = (next_location - current_location).normalized()*SPEED
+		
+		if nav_agent.distance_to_target() < SAFE_DIST:
+			new_velocity = velocity.move_toward(Vector3(0,0,0),ACCEL)
+			var direction = (next_location - current_location).normalized()
+			rotation.y = lerp_angle(rotation.y, atan2(direction.x,direction.z), LERP_VAL)
+			if sfx.playing:
+				sfx.stop()
+		else:
+			new_velocity = velocity.move_toward(new_velocity,ACCEL)
+			rotation.y = lerp_angle(rotation.y, atan2(velocity.x,velocity.z), LERP_VAL)
+			if not sfx.playing or velocity.length() < 0.5:
+				sfx.play()
+		nav_agent.set_velocity(new_velocity)
+		
+		animtree.set("parameters/TimeScale/scale",1+speed_scale*new_velocity.length()/SPEED)
+		animtree.set("parameters/BlendSpace1D/blend_position",new_velocity.length()/SPEED)
 	
 	if talking == 1 and timer.is_stopped():
 		var new_talking_time = wrapf(talking_time+delta, 0, TALKING_FRAME)
@@ -94,11 +100,13 @@ func change_phoneme(change):
 			mouth.set_blend_shape_value(ph,0)
 
 func update_target_location(target_location):
-	nav_agent.set_target_location(target_location)
+	if state == FOLLOW:
+		nav_agent.set_target_location(target_location)
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
-	velocity = velocity.move_toward(safe_velocity,ACCEL)
-	move_and_slide()
+	if state == FOLLOW:
+		velocity = velocity.move_toward(safe_velocity,ACCEL)
+		move_and_slide()
 
 
 func _on_timer_timeout():
