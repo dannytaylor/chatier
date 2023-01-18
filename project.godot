@@ -13,9 +13,15 @@ _global_script_classes=[{
 "class": &"ACVoiceBox",
 "language": &"GDScript",
 "path": "res://addons/ACVoicebox/ACVoicebox.gd"
+}, {
+"base": "Node",
+"class": &"twitchWS",
+"language": &"GDScript",
+"path": "res://twitchWS.gd"
 }]
 _global_script_class_icons={
-"ACVoiceBox": ""
+"ACVoiceBox": "",
+"twitchWS": ""
 }
 
 [application]
