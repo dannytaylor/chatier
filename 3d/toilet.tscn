@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ddkq0hfwm2d8y"]
+[gd_scene load_steps=16 format=3 uid="uid://ddkq0hfwm2d8y"]
 
 [ext_resource type="PackedScene" uid="uid://cstu7lyf4yea8" path="res://3d/portapotty.glb" id="1_5dasm"]
 [ext_resource type="Script" path="res://3d/toilet.gd" id="1_c8loj"]
@@ -30,6 +30,9 @@ material = SubResource("ShaderMaterial_6ycv0")
 size = Vector2(1.6, 1.1)
 subdivide_width = 30
 subdivide_depth = 30
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k06wh"]
+size = Vector3(0.611429, 1.43305, 0.0900723)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5vbos"]
 size = Vector3(0.124611, 2.48081, 1.43974)
@@ -75,6 +78,12 @@ max_distance = 9.0
 
 [node name="portapotty" parent="." instance=ExtResource("1_5dasm")]
 
+[node name="StaticBody3D" type="StaticBody3D" parent="portapotty/door" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/door/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.314305, 0, 0)
+shape = SubResource("BoxShape3D_k06wh")
+
 [node name="StaticBody3D" type="StaticBody3D" parent="portapotty"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
@@ -93,11 +102,15 @@ shape = SubResource("BoxShape3D_wyyqe")
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0278085, 2.69824, 0.0699863)
 shape = SubResource("BoxShape3D_ijskq")
 
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="portapotty/StaticBody3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0278085, -0.0049355, 0.0699863)
+shape = SubResource("BoxShape3D_ijskq")
+
 [node name="DoorZone" type="Area3D" parent="portapotty"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.30297)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/DoorZone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.480305, 1.20099, 1.86191)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.480305, 1.20099, 2.77563)
 shape = SubResource("BoxShape3D_18a5n")
 
 [connection signal="body_entered" from="portapotty/DoorZone" to="." method="_on_door_zone_body_entered"]

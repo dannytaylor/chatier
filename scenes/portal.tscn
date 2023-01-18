@@ -2,10 +2,13 @@
 
 [ext_resource type="Script" path="res://scenes/portal.gd" id="1_wy1ix"]
 
-[sub_resource type="Gradient" id="Gradient_qew2u"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kec0i"]
+shading_mode = 0
+disable_receive_shadows = true
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_3jf1u"]
-gradient = SubResource("Gradient_qew2u")
+[sub_resource type="PlaneMesh" id="PlaneMesh_whq6x"]
+material = SubResource("StandardMaterial3D_kec0i")
+size = Vector2(2, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8fyrn"]
 size = Vector3(2, 4, 1)
@@ -13,15 +16,18 @@ size = Vector3(2, 4, 1)
 [node name="Portal" type="Node3D" groups=["portal"]]
 script = ExtResource("1_wy1ix")
 
-[node name="PortalSprite" type="Sprite3D" parent="."]
-transparent = false
-double_sided = false
-texture = SubResource("GradientTexture2D_3jf1u")
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Front" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+layers = 2
+mesh = SubResource("PlaneMesh_whq6x")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(400, 800)
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
+cull_mask = 1048573
 fov = 60.0
 
 [node name="WarpZone" type="Area3D" parent="."]
