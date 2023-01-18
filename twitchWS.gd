@@ -1,7 +1,7 @@
-extends Node
+class_name twitchWS extends Node
 
 @onready var peepos = get_tree().get_nodes_in_group("peepos")
-@onready var dc_text = get_node('/root/main/disconnect_text')
+@onready var dc_text = get_node('disconnect_text')
 @onready var acvoice
 @onready var timer = $Timer
 
@@ -22,13 +22,16 @@ var split_str = "PRIVMSG " + channel + " :"
 var msg_queue = []
 var talking_peepo
 var talking = 0
-var wait_time = 1.2
+var wait_time = 0.8
 
 func _ready():
-	randomize()
 	client = WebSocketPeer.new()
 	print(client.connect_to_url(ip))
 	timer.wait_time = wait_time
+	for peepo in peepos:
+		var acvb = load("res://addons/ACVoicebox/ACVoicebox.tscn").instantiate()
+		peepo.add_child(acvb)
+		acvb.connect("finished_phrase", Callable(self, "_on_ac_voicebox_finished_phrase"))
 
 func send_login():
 	_login_sent = true
@@ -46,6 +49,7 @@ func _process(_delta):
 	client.poll()
 
 	if state == WebSocketPeer.STATE_OPEN:
+		dc_text.visible = false
 		if not _login_sent:
 			send_login()
 		while client.get_available_packet_count():
@@ -66,14 +70,17 @@ func _process(_delta):
 				
 	elif state == WebSocketPeer.STATE_CLOSING:
 		# Keep polling to achieve proper close.
+		dc_text.visible = true
+		_login_sent = false
 		pass
-	elif state == WebSocketPeer.STATE_CLOSED:
+	elif state == WebSocketPeer.STATE_CLOSED and _login_sent:
 		var code = client.get_close_code()
 		var reason = client.get_close_reason()
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
-		dc_text.visible = true
 		
-		set_process(false) # Stop processing.
+		
+		
+		# set_process(false) # Stop processing.
 		
 	if len(msg_queue) > 0 and talking == 0 and timer.is_stopped():
 		var tts_msg = msg_queue.pop_at(0)
