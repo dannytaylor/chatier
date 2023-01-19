@@ -1,6 +1,8 @@
 extends Node3D
 
 var gamba = false
+var won = false
+
 var WINDUP = PI*2.0*160.0
 var SPACING = PI*2.0*80.0 # rotations/sec
 var SPEED = PI/(300.0)
@@ -10,6 +12,9 @@ var spins = []
 @onready var timeout = $TimeOut
 @onready var sfx_pull = $sfx_pull
 @onready var sfx_win = $sfx_win
+
+var emission = 0.0
+@onready var stars_mat = $stars.get_active_material(0)
 
 @export var peepo: Node3D
 var mouth: Node3D
@@ -41,12 +46,21 @@ func _ready():
 	timeout.wait_time = randf_range(0.0,2.0)
 	timeout.start()
 	
+	stars_mat = stars_mat.duplicate()
+	$stars.set_surface_override_material(0,stars_mat)
+	stars_mat.albedo_color = Color(0,0,0,1.0)
+	stars_mat.emission_energy_multiplier = emission
+	
 	
 func pull():
+	won = false
 	gamba = true
-	print("SPIN START")
+	$number.visible = false
+	
+	emission = 0.0
+	
 	sfx_pull.play()
-	sfx_pull.volume_db = -6
+	sfx_pull.volume_db = -12
 	
 	mouth.set_blend_shape_value(3,0.5)
 	mouth.set_blend_shape_value(4,0.5)
@@ -70,6 +84,9 @@ func end_spin():
 	val = int(val)
 	print(val)
 	
+	$number.text = str(val)
+	$number.visible = true
+	$number.position.x = 0.5
 	
 	sfx_pull.stop()
 	if val % 3 == 0:
@@ -82,6 +99,7 @@ func end_spin():
 
 	
 func win():
+	won = true
 	peepo.get_node('peepo/AnimationTree').set("parameters/gamba_win_shot/active",true)
 	mouth.set_blend_shape_value(3,0.0)
 	mouth.set_blend_shape_value(4,0.0)
@@ -97,9 +115,19 @@ func _process(_delta):
 			if s.mesh.rotation.x > (s.result_rot - PI/64) and s.mesh.rotation.x < (s.result_rot + PI/64):
 				finished = true
 				
-		sfx_pull.volume_db = lerp(sfx_pull.volume_db,-30.0,LERP_VAL/8)
+		sfx_pull.volume_db = lerp(sfx_pull.volume_db,-36.0,LERP_VAL/8)
 		if finished:
 			end_spin()
+			
+	if won:
+		emission += _delta
+		stars_mat.emission_energy_multiplier = pingpong(emission,0.3)*15
+	else:
+		stars_mat.emission_energy_multiplier = lerp(stars_mat.emission_energy_multiplier,emission,LERP_VAL*2)
+	if $number.visible:
+		$number.position.x -= LERP_VAL/8
+		if $number.position.x < -0.2:
+			$number.visible = false
 
 	if not gamba and timeout.is_stopped():
 		pull()

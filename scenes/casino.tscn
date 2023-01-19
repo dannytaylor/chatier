@@ -1,12 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://c6tw1blukdjvh"]
+[gd_scene load_steps=13 format=3 uid="uid://c6tw1blukdjvh"]
 
 [ext_resource type="PackedScene" uid="uid://b1j6gwmwpdb3x" path="res://player.tscn" id="1_v8rj8"]
-[ext_resource type="Texture2D" uid="uid://dsb8noil5ikhy" path="res://textures/Carpet013_1K-JPG/Carpet013_1K_Color.jpg" id="1_yj2ny"]
-[ext_resource type="Texture2D" uid="uid://c3a834o055kn4" path="res://textures/Carpet013_1K-JPG/Carpet013_1K_NormalGL.jpg" id="2_lab6b"]
-[ext_resource type="Texture2D" uid="uid://b6irbsvjpmg5p" path="res://textures/Carpet013_1K-JPG/Carpet013_1K_Displacement.jpg" id="2_tyqu5"]
-[ext_resource type="Texture2D" uid="uid://ca78hkmdtyny1" path="res://textures/Carpet013_1K-JPG/Carpet013_1K_Roughness.jpg" id="3_jhbia"]
+[ext_resource type="PackedScene" uid="uid://46uux3ym8q2o" path="res://3d/casinofloor.tscn" id="5_2xnst"]
+[ext_resource type="PackedScene" uid="uid://barm7jl1pa2yo" path="res://3d/slot.glb" id="5_8xpkd"]
 [ext_resource type="PackedScene" uid="uid://dabg2lrxyrp2a" path="res://scenes/gamba.tscn" id="6_dcrfg"]
+[ext_resource type="Script" path="res://scenes/UI.gd" id="7_idw6n"]
 [ext_resource type="AudioStream" uid="uid://c636rnlvxmml4" path="res://audio/115068__milton__casino-hq.mp3" id="7_kkvcj"]
+[ext_resource type="Texture2D" uid="uid://bce5dh7mo0gka" path="res://textures/circle.png" id="7_nly2p"]
 [ext_resource type="Script" path="res://twitchWS.gd" id="8_jtffw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4y2wa"]
@@ -15,30 +15,13 @@
 sky_material = SubResource("ProceduralSkyMaterial_4y2wa")
 
 [sub_resource type="Environment" id="Environment_qjlaa"]
-background_mode = 2
-background_color = Color(0.592157, 0.498039, 0.556863, 1)
 sky = SubResource("Sky_umsag")
 reflected_light_source = 2
 tonemap_mode = 2
 sdfgi_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n1yxb"]
-albedo_texture = ExtResource("1_yj2ny")
-metallic_specular = 0.05
-roughness = 0.95
-roughness_texture = ExtResource("3_jhbia")
-normal_enabled = true
-normal_texture = ExtResource("2_lab6b")
-heightmap_enabled = true
-heightmap_texture = ExtResource("2_tyqu5")
-uv1_scale = Vector3(64, 64, 64)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_nv8oc"]
-material = SubResource("StandardMaterial3D_n1yxb")
-size = Vector2(256, 256)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_qn5x5"]
-data = PackedVector3Array(200, 0, 200, -200, 0, 200, 200, 0, -200, -200, 0, 200, -200, 0, -200, 200, 0, -200)
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.04
+volumetric_fog_albedo = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_b5vuv"]
 font_size = 128
@@ -50,19 +33,12 @@ outline_color = Color(0.117647, 0.117647, 0.117647, 1)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_qjlaa")
 
-[node name="floor" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_nv8oc")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="floor"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="floor/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_qn5x5")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 129.619, 0)
+light_color = Color(0.878431, 0.839216, 0.721569, 1)
+shadow_enabled = true
 
 [node name="player" parent="." instance=ExtResource("1_v8rj8")]
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.772567, 0.634933, 0, -0.634933, -0.772567, -2.53352, 1.89298, 6.0754)
-shadow_enabled = true
 
 [node name="ambience" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_kkvcj")
@@ -83,17 +59,1450 @@ offset_bottom = 520.0
 text = "chat connection lost"
 label_settings = SubResource("LabelSettings_b5vuv")
 
-[node name="gambas" type="Node3D" parent="."]
+[node name="casinofloor" parent="." instance=ExtResource("5_2xnst")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.84532, 174.654)
 
-[node name="gamba" parent="gambas" instance=ExtResource("6_dcrfg")]
+[node name="pathlights" type="Node3D" parent="."]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.962009, 1.1934e-08, -0.273019, 0.273019, -4.20507e-08, 0.962009, 0, -1, -4.37114e-08, -3.54075, 7.34266, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.893935, -1.95913e-08, 0.448196, -0.448196, -3.90752e-08, 0.893935, 0, -1, -4.37114e-08, 5.78431, 7.34266, 12.9476)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.962009, 1.1934e-08, -0.273019, 0.273019, -4.20507e-08, 0.962009, 0, -1, -4.37114e-08, -3.54075, 7.34266, 18.1345)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D4" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.893935, -1.95913e-08, 0.448196, -0.448196, -3.90752e-08, 0.893935, 0, -1, -4.37114e-08, 5.78431, 7.34266, 26.443)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D5" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.962009, 1.1934e-08, -0.273019, 0.273019, -4.20507e-08, 0.962009, 0, -1, -4.37114e-08, -3.54075, 7.34266, 41.2068)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D6" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.893935, -1.95913e-08, 0.448196, -0.448196, -3.90752e-08, 0.893935, 0, -1, -4.37114e-08, 5.78431, 7.34266, 49.5153)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D7" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.962009, 1.1934e-08, -0.273019, 0.273019, -4.20507e-08, 0.962009, 0, -1, -4.37114e-08, -3.54075, 7.34266, 54.7022)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="SpotLight3D8" type="SpotLight3D" parent="pathlights"]
+transform = Transform3D(0.893935, -1.95913e-08, 0.448196, -0.448196, -3.90752e-08, 0.893935, 0, -1, -4.37114e-08, 5.78431, 7.34266, 63.0106)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 4.0
+spot_range = 16.4226
+spot_angle = 38.5398
+
+[node name="gamba_east" type="Node3D" parent="."]
+
+[node name="gambas" type="Node3D" parent="gamba_east"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.1785, 0, 9.5504)
+
+[node name="gamba" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.59125)
 
-[node name="gamba2" parent="gambas" instance=ExtResource("6_dcrfg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77666, 0, 3.10215)
+[node name="gamba2" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.836, 0, 2.59125)
 
-[node name="gamba3" parent="gambas" instance=ExtResource("6_dcrfg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15158, 0, 3.10215)
+[node name="gamba3" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="gamba8" parent="gamba_east/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.02363, 0, 7.17542)
+
+[node name="slot4" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="gambas2" type="Node3D" parent="gamba_east"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.1785, 0, 22.0237)
+
+[node name="gamba" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.59125)
+
+[node name="gamba2" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.836, 0, 2.59125)
+
+[node name="gamba3" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="gamba8" parent="gamba_east/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.02363, 0, 7.17542)
+
+[node name="slot4" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas2"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas2"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="gambas3" type="Node3D" parent="gamba_east"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.726, 0, 22.0237)
+
+[node name="gamba3" parent="gamba_east/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas3"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas3"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas4" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 44.8129, 0, 19.5142)
+
+[node name="gamba3" parent="gamba_east/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas4"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas4"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas5" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 23.7049, 0, 43.5351)
+
+[node name="gamba3" parent="gamba_east/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas5"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas5"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas6" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 45.311, 0, 43.5351)
+
+[node name="gamba3" parent="gamba_east/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_east/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_east/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/gambas6"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/gambas6"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="empty_gamba" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 43.5351)
+
+[node name="slot" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba2" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 31.8449)
+
+[node name="slot" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba2"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba2"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba3" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 19.5617)
+
+[node name="slot" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba3"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba3"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba4" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 53.8835)
+
+[node name="slot" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba4"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba4"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba5" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 45.4531, 0, 54.3539)
+
+[node name="slot" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba5"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba5"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba6" type="Node3D" parent="gamba_east"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.129, 0, 54.3539)
+
+[node name="slot" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_east/empty_gamba6"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_east/empty_gamba6"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_east/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="gamba_west" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -4.71006, 0, 61.7058)
+
+[node name="gambas" type="Node3D" parent="gamba_west"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.1785, 0, 9.5504)
+
+[node name="gamba" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.59125)
+
+[node name="gamba2" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.836, 0, 2.59125)
+
+[node name="gamba3" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="gamba8" parent="gamba_west/gambas" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.02363, 0, 7.17542)
+
+[node name="slot4" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="gambas2" type="Node3D" parent="gamba_west"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.1785, 0, 22.0237)
+
+[node name="gamba" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.59125)
+
+[node name="gamba2" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.836, 0, 2.59125)
+
+[node name="gamba3" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="gamba8" parent="gamba_west/gambas2" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.02363, 0, 7.17542)
+
+[node name="slot4" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas2"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas2"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="gambas3" type="Node3D" parent="gamba_west"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.726, 0, 22.0237)
+
+[node name="gamba3" parent="gamba_west/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas3" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas3"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas3"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/gambas3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas4" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 44.8129, 0, 19.5142)
+
+[node name="gamba3" parent="gamba_west/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas4" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas4"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas4"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/gambas4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas5" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 23.7049, 0, 43.5351)
+
+[node name="gamba3" parent="gamba_west/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas5" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas5"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas5"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/gambas5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="gambas6" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 45.311, 0, 43.5351)
+
+[node name="gamba3" parent="gamba_west/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.87727, 0, 2.59125)
+
+[node name="slot" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="gamba4" parent="gamba_west/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79044, 0, 2.59125)
+
+[node name="slot2" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="gamba6" parent="gamba_west/gambas6" instance=ExtResource("6_dcrfg")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.06919, 0, 7.17542)
+
+[node name="slot3" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/gambas6"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/gambas6"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/gambas6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="empty_gamba" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 43.5351)
+
+[node name="slot" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba2" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 31.8449)
+
+[node name="slot" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba2"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba2"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba2" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba3" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 19.5617)
+
+[node name="slot" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba3"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba3"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba3" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba4" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 66.15, 0, 53.8835)
+
+[node name="slot" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba4"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba4"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba4" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba5" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 45.4531, 0, 54.3539)
+
+[node name="slot" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba5"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba5"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba5" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="empty_gamba6" type="Node3D" parent="gamba_west"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 24.129, 0, 54.3539)
+
+[node name="slot" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.91235, 0, 2.46348)
+
+[node name="slot2" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1278, 0, 2.46348)
+
+[node name="slot3" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6.14554, 0, 7.36563)
+
+[node name="slot4" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 10.361, 0, 7.36563)
+
+[node name="slot5" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.17404, 0, 7.36563)
+
+[node name="slot6" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.252244, 0, 7.36563)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="gamba_west/empty_gamba6"]
+transform = Transform3D(0.980785, 8.52767e-09, -0.19509, 0.19509, -4.28715e-08, 0.980785, 0, -1, -4.37114e-08, 0.461456, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="gamba_west/empty_gamba6"]
+transform = Transform3D(0.980789, -8.52692e-09, 0.195073, -0.195073, -4.28716e-08, 0.980789, 0, -1, -4.37114e-08, 10.0943, 7.09199, 4.63915)
+light_color = Color(0.835294, 0.917647, 0.980392, 1)
+light_energy = 24.0
+shadow_enabled = true
+spot_range = 8.35015
+spot_angle = 38.5398
+
+[node name="slot7" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.73616, 0, 2.46348)
+
+[node name="slot8" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00214958, 0, 2.46348)
+
+[node name="slot9" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8.09584, 0, 7.36563)
+
+[node name="slot10" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8447, 0, 2.46349)
+
+[node name="slot11" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.86465, 0, 2.46349)
+
+[node name="slot12" parent="gamba_west/empty_gamba6" instance=ExtResource("5_8xpkd")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.07898, 0, 7.36564)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("7_idw6n")
+
+[node name="circle" type="Sprite2D" parent="UI"]
+position = Vector2(793, 606)
+texture = ExtResource("7_nly2p")
 
 [connection signal="timeout" from="twitchWS/Timer" to="twitchWS" method="_on_timer_timeout"]
 
-[editable path="gambas/gamba"]
+[editable path="gamba_east/gambas/gamba"]
+[editable path="gamba_east/gambas/gamba2"]
+[editable path="gamba_east/gambas/gamba3"]
+[editable path="gamba_east/gambas/gamba4"]
+[editable path="gamba_east/gambas/gamba6"]
+[editable path="gamba_east/gambas/gamba8"]
+[editable path="gamba_east/gambas2/gamba"]
+[editable path="gamba_east/gambas2/gamba2"]
+[editable path="gamba_east/gambas2/gamba3"]
+[editable path="gamba_east/gambas2/gamba4"]
+[editable path="gamba_east/gambas2/gamba6"]
+[editable path="gamba_east/gambas2/gamba8"]
+[editable path="gamba_east/gambas3/gamba3"]
+[editable path="gamba_east/gambas3/gamba4"]
+[editable path="gamba_east/gambas3/gamba6"]
+[editable path="gamba_east/gambas4/gamba3"]
+[editable path="gamba_east/gambas4/gamba4"]
+[editable path="gamba_east/gambas4/gamba6"]
+[editable path="gamba_east/gambas5/gamba3"]
+[editable path="gamba_east/gambas5/gamba4"]
+[editable path="gamba_east/gambas5/gamba6"]
+[editable path="gamba_east/gambas6/gamba3"]
+[editable path="gamba_east/gambas6/gamba4"]
+[editable path="gamba_east/gambas6/gamba6"]
+[editable path="gamba_west/gambas/gamba"]
+[editable path="gamba_west/gambas/gamba2"]
+[editable path="gamba_west/gambas/gamba3"]
+[editable path="gamba_west/gambas/gamba4"]
+[editable path="gamba_west/gambas/gamba6"]
+[editable path="gamba_west/gambas/gamba8"]
+[editable path="gamba_west/gambas2/gamba"]
+[editable path="gamba_west/gambas2/gamba2"]
+[editable path="gamba_west/gambas2/gamba3"]
+[editable path="gamba_west/gambas2/gamba4"]
+[editable path="gamba_west/gambas2/gamba6"]
+[editable path="gamba_west/gambas2/gamba8"]
+[editable path="gamba_west/gambas3/gamba3"]
+[editable path="gamba_west/gambas3/gamba4"]
+[editable path="gamba_west/gambas3/gamba6"]
+[editable path="gamba_west/gambas4/gamba3"]
+[editable path="gamba_west/gambas4/gamba4"]
+[editable path="gamba_west/gambas4/gamba6"]
+[editable path="gamba_west/gambas5/gamba3"]
+[editable path="gamba_west/gambas5/gamba4"]
+[editable path="gamba_west/gambas5/gamba6"]
+[editable path="gamba_west/gambas6/gamba3"]
+[editable path="gamba_west/gambas6/gamba4"]
+[editable path="gamba_west/gambas6/gamba6"]

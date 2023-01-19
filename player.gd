@@ -20,8 +20,11 @@ const DELTA_DB = 15.0
 const IDLE_TIMEOUT = 6.0
 var idle_time = 0.0
 
+var change_scene = false
+var circle
+
 enum {NORMAL,GUN,FPS}
-var camera_state = NORMAL
+var cam_mode = NORMAL
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = 2 * ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -34,7 +37,7 @@ func _unhandled_input(event):
 		get_tree().quit()
 		
 	if Input.is_action_just_pressed("gun"):
-		camera_state = abs(1-camera_state)
+		cam_mode = abs(1-cam_mode)
 	
 	if event is InputEventMouseMotion:
 		spring_arm_pivot.rotate_y(-event.relative.x * 0.003)
@@ -108,14 +111,33 @@ func _physics_process(delta):
 	animtree.set("parameters/ground/blend_amount",v_fraction)
 	animtree.set("parameters/TimeScale/scale",1+v_fraction)
 
-	if camera_state == GUN:
+	if cam_mode == GUN:
 		spring_arm.spring_length = lerp(spring_arm.spring_length,3.0,LERP_VAL)
 		spring_arm.position.x = lerp(spring_arm.position.x,0.5,LERP_VAL)
 		camera.fov = lerp(camera.fov,60.0,LERP_VAL)
+		camera.attributes.dof_blur_near_distance = 0.1
+		
+		# armature.rotation.y = spring_arm_pivot.rotation.y+PI # lock armature to camera rot in gun mode
 	else:
 		spring_arm.spring_length = lerp(spring_arm.spring_length,8.0,LERP_VAL)
 		spring_arm.position.x = lerp(spring_arm.position.x,0.0,LERP_VAL)
 		camera.fov = lerp(camera.fov,45.0,LERP_VAL)
+		camera.attributes.dof_blur_near_distance = 0.05
 		
 		
 	move_and_slide()
+	
+
+	if change_scene:
+		if circle is Sprite2D:
+			circle.scale = lerp(circle.scale,Vector2(2.0,2.0),0.01)
+			if circle.scale.length() > 1.5:
+				get_tree().change_scene_to_file("res://scenes/casino.tscn")
+
+
+func _on_scenechangearea_body_entered(body):
+	if body == self:
+		change_scene = true
+		circle = get_tree().get_root().get_node("main/UI/circle")
+		circle.visible = true
+		
