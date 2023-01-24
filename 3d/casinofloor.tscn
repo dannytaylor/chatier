@@ -1,9 +1,33 @@
-[gd_scene load_steps=4 format=3 uid="uid://46uux3ym8q2o"]
+[gd_scene load_steps=12 format=3 uid="uid://46uux3ym8q2o"]
 
 [ext_resource type="PackedScene" uid="uid://duidpvfnttwr3" path="res://3d/casinofloor.glb" id="1_cg8qv"]
 [ext_resource type="Script" path="res://3d/casinofloor.gd" id="2_8wqqn"]
+[ext_resource type="Shader" path="res://3d/ripple.gdshader" id="3_6sqdn"]
+[ext_resource type="Texture2D" uid="uid://jji64gjmhqah" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_Color.jpg" id="3_iaivl"]
+[ext_resource type="Texture2D" uid="uid://dh8fuj0p7mi0i" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_NormalGL.jpg" id="4_ckoqq"]
+[ext_resource type="Texture2D" uid="uid://db7fo4h2156k5" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_Roughness.jpg" id="5_st0o6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01g3r"]
+albedo_texture = ExtResource("3_iaivl")
+roughness_texture = ExtResource("5_st0o6")
+normal_enabled = true
+normal_texture = ExtResource("4_ckoqq")
+uv1_scale = Vector3(16, 16, 16)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cvl74"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lpwut"]
+size = Vector3(488.341, 61.1024, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bvs8s"]
+render_priority = 0
+shader = ExtResource("3_6sqdn")
+shader_parameter/center = null
+shader_parameter/speed = null
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_3ylwh"]
+material = SubResource("ShaderMaterial_bvs8s")
+size = Vector2(10, 15)
 
 [node name="casinofloor" instance=ExtResource("1_cg8qv")]
 script = ExtResource("2_8wqqn")
@@ -12,8 +36,19 @@ script = ExtResource("2_8wqqn")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.031938, -105.092, -51.1414)
 visible = false
 
+[node name="floor" parent="." index="2"]
+surface_material_override/2 = SubResource("StandardMaterial3D_01g3r")
+
 [node name="StaticBody3D" type="StaticBody3D" parent="." index="5"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.031938, 1.85224, -51.1414)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
 shape = SubResource("WorldBoundaryShape3D_cvl74")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -257.354)
+shape = SubResource("BoxShape3D_lpwut")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 5.56395, -179.693)
+mesh = SubResource("PlaneMesh_3ylwh")

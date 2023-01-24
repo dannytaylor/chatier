@@ -20,6 +20,10 @@ const DELTA_DB = 15.0
 const IDLE_TIMEOUT = 6.0
 var idle_time = 0.0
 
+
+@onready var score_label = $"../UI/score"
+var score = 0
+
 var change_scene = false
 var circle
 
@@ -122,7 +126,7 @@ func _physics_process(delta):
 		spring_arm.spring_length = lerp(spring_arm.spring_length,8.0,LERP_VAL)
 		spring_arm.position.x = lerp(spring_arm.position.x,0.0,LERP_VAL)
 		camera.fov = lerp(camera.fov,45.0,LERP_VAL)
-		camera.attributes.dof_blur_near_distance = 0.05
+		camera.attributes.dof_blur_near_distance = 4.0
 		
 		
 	move_and_slide()
@@ -130,9 +134,14 @@ func _physics_process(delta):
 
 	if change_scene:
 		if circle is Sprite2D:
-			circle.scale = lerp(circle.scale,Vector2(2.0,2.0),0.01)
+			circle.scale = lerp(circle.scale,Vector2(2.0,2.0),0.005)
 			if circle.scale.length() > 1.5:
 				get_tree().change_scene_to_file("res://scenes/casino.tscn")
+				
+				
+	if score_label:
+		score += delta
+		score_label.text = "score " + str(int(score))
 
 
 func _on_scenechangearea_body_entered(body):

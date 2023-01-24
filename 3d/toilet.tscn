@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ddkq0hfwm2d8y"]
+[gd_scene load_steps=20 format=3 uid="uid://ddkq0hfwm2d8y"]
 
 [ext_resource type="PackedScene" uid="uid://cstu7lyf4yea8" path="res://3d/portapotty.glb" id="1_5dasm"]
 [ext_resource type="Script" path="res://3d/toilet.gd" id="1_c8loj"]
@@ -7,6 +7,7 @@
 [ext_resource type="Shader" path="res://3d/flag.gdshader" id="4_fa4ak"]
 [ext_resource type="Texture2D" uid="uid://bkkxfiqllp7sr" path="res://3d/textures/duckflag.jpg" id="5_igi8e"]
 [ext_resource type="AudioStream" uid="uid://dxkxr373jl03u" path="res://audio/music1_shindigs.mp3" id="6_jfl6s"]
+[ext_resource type="Shader" path="res://3d/ripple.gdshader" id="8_jem4c"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_14quf"]
 size = Vector3(1.71595, 1.68763, 1.87099)
@@ -45,6 +46,19 @@ size = Vector3(1.47305, 0.259563, 1.61442)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_18a5n"]
 size = Vector3(9.38638, 2.26311, 7.15706)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hrxac"]
+size = Vector3(0.759568, 2.43857, 0.15704)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_db6dp"]
+render_priority = 0
+shader = ExtResource("8_jem4c")
+shader_parameter/center = null
+shader_parameter/speed = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sgjaa"]
+material = SubResource("ShaderMaterial_db6dp")
+size = Vector2(1.2, 2.5)
 
 [node name="PortaPotty" type="Node3D"]
 script = ExtResource("1_c8loj")
@@ -113,8 +127,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.30297)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.480305, 1.20099, 2.77563)
 shape = SubResource("BoxShape3D_18a5n")
 
+[node name="PortalZone" type="Area3D" parent="portapotty"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.107336, 1.34777, 0.727006)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="portapotty/PortalZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0647222)
+shape = SubResource("BoxShape3D_hrxac")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="portapotty/PortalZone"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_sgjaa")
+
 [connection signal="body_entered" from="portapotty/DoorZone" to="." method="_on_door_zone_body_entered"]
 [connection signal="body_exited" from="portapotty/DoorZone" to="." method="_on_door_zone_body_exited"]
+[connection signal="body_entered" from="portapotty/PortalZone" to="." method="_on_portal_zone_body_entered"]
 
 [editable path="gadsden"]
 [editable path="portapotty"]

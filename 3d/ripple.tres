@@ -1,0 +1,27 @@
+[gd_resource type="VisualShader" load_steps=2 format=3 uid="uid://x4b8mcxgmgkb"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ukf1o"]
+input_name = "time"
+
+[resource]
+code = "shader_type canvas_item;
+
+
+
+void fragment() {
+// Input:2
+	float n_out2p0 = TIME;
+
+
+// Output:0
+	COLOR.rgb = vec3(n_out2p0);
+
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2(700, 160)
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_ukf1o")
+nodes/fragment/2/position = Vector2(100, 160)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0)
