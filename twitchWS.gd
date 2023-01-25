@@ -5,6 +5,9 @@ class_name twitchWS extends Node
 @onready var acvoice
 @onready var timer = $Timer
 
+
+@onready var channel_input = $"../UI/menu/channel"
+
 var tts_active = false
 
 @export var ip = "ws://irc-ws.chat.twitch.tv:80"
@@ -81,7 +84,8 @@ func _process(_delta):
 		
 		
 		# set_process(false) # Stop processing.
-		
+	
+	# enqueue next msg
 	if len(msg_queue) > 0 and talking == 0 and timer.is_stopped():
 		var tts_msg = msg_queue.pop_at(0)
 		talking = 1
@@ -92,6 +96,8 @@ func _process(_delta):
 		acvoice.play_string(tts_msg)
 		
 		talking_peepo.text_to_speech(1,tts_msg)
+		
+		$"../player".score_mult += 1
 		
 		
 
@@ -107,3 +113,26 @@ func _on_ac_voicebox_finished_phrase():
 func _on_timer_timeout():
 	timer.stop()
 	timer.wait_time = wait_time
+
+
+func _on_button_button_up():
+	
+	client.send_text(("PART "+ channel + "\n"))
+	channel = channel_input.text
+	split_str = "PRIVMSG " + channel + " :"
+	print(channel)
+	msg_queue = []
+	#client = WebSocketPeer.new()
+	#print(client.connect_to_url(ip))
+	
+	var state = client.get_ready_state()
+	if state == WebSocketPeer.STATE_CLOSED:
+		_login_sent = false
+		_ready()
+	else:
+		client.send_text(("JOIN "+ channel + "\n"))
+	
+	print(client.get_ready_state())
+	
+	var player = get_parent().get_node('player')
+	player.menu_switch()

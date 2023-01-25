@@ -20,9 +20,13 @@ const DELTA_DB = 15.0
 const IDLE_TIMEOUT = 6.0
 var idle_time = 0.0
 
+@onready var porta = $"../NavigationRegion3D/nav_group/PortaPotty"
 
 @onready var score_label = $"../UI/score"
 var score = 0
+var score_mult = 1
+@onready var menu = $"../UI/menu"
+var menu_mode = false
 
 var change_scene = false
 var circle
@@ -36,12 +40,26 @@ var gravity = 2 * ProjectSettings.get_setting("physics/3d/default_gravity")
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func _unhandled_input(event):		
+func menu_switch():
+	if menu:
+		menu_mode = not menu_mode
+		menu.visible = menu_mode
+		if menu_mode:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			
+
+func _unhandled_input(event):
 	if Input.is_action_just_pressed("quit"):
 		get_tree().quit()
 		
+	if Input.is_action_just_pressed("menu"):
+		menu_switch()
+		
 	if Input.is_action_just_pressed("gun"):
 		cam_mode = abs(1-cam_mode)
+	
 	
 	if event is InputEventMouseMotion:
 		spring_arm_pivot.rotate_y(-event.relative.x * 0.003)
@@ -115,33 +133,40 @@ func _physics_process(delta):
 	animtree.set("parameters/ground/blend_amount",v_fraction)
 	animtree.set("parameters/TimeScale/scale",1+v_fraction)
 
+	var arm_scale = 1.0
+	if porta:
+		var dist = global_position.distance_to($"../NavigationRegion3D/nav_group/PortaPotty".global_position)
+		arm_scale = clamp(dist/7.0,0.0,1.0)*0.15+0.85
+
 	if cam_mode == GUN:
-		spring_arm.spring_length = lerp(spring_arm.spring_length,3.0,LERP_VAL)
+		spring_arm.spring_length = lerp(spring_arm.spring_length,3.0*arm_scale,LERP_VAL)
 		spring_arm.position.x = lerp(spring_arm.position.x,0.5,LERP_VAL)
 		camera.fov = lerp(camera.fov,60.0,LERP_VAL)
 		camera.attributes.dof_blur_near_distance = 0.1
 		
 		# armature.rotation.y = spring_arm_pivot.rotation.y+PI # lock armature to camera rot in gun mode
 	else:
-		spring_arm.spring_length = lerp(spring_arm.spring_length,8.0,LERP_VAL)
+		spring_arm.spring_length = lerp(spring_arm.spring_length*arm_scale,8.0,LERP_VAL)
 		spring_arm.position.x = lerp(spring_arm.position.x,0.0,LERP_VAL)
 		camera.fov = lerp(camera.fov,45.0,LERP_VAL)
 		camera.attributes.dof_blur_near_distance = 4.0
-		
-		
+
+
 	move_and_slide()
 	
 
 	if change_scene:
 		if circle is Sprite2D:
-			circle.scale = lerp(circle.scale,Vector2(2.0,2.0),0.005)
+			circle.modulate = Color(1.0,1.0,1.0,1.0)*circle.scale.length()*2
+			circle.scale = lerp(circle.scale,Vector2(2.0,2.0),0.02*circle.scale.length())
 			if circle.scale.length() > 1.5:
 				get_tree().change_scene_to_file("res://scenes/casino.tscn")
 				
 				
 	if score_label:
 		score += delta
-		score_label.text = "score " + str(int(score))
+		score_label.text = "number " + str(int(score))
+		
 
 
 func _on_scenechangearea_body_entered(body):

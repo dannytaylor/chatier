@@ -1,23 +1,34 @@
-[gd_scene load_steps=12 format=3 uid="uid://46uux3ym8q2o"]
+[gd_scene load_steps=15 format=3 uid="uid://46uux3ym8q2o"]
 
 [ext_resource type="PackedScene" uid="uid://duidpvfnttwr3" path="res://3d/casinofloor.glb" id="1_cg8qv"]
 [ext_resource type="Script" path="res://3d/casinofloor.gd" id="2_8wqqn"]
 [ext_resource type="Shader" path="res://3d/ripple.gdshader" id="3_6sqdn"]
 [ext_resource type="Texture2D" uid="uid://jji64gjmhqah" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_Color.jpg" id="3_iaivl"]
+[ext_resource type="Texture2D" uid="uid://cy25ds1ytxxel" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_AmbientOcclusion.jpg" id="4_3k8do"]
 [ext_resource type="Texture2D" uid="uid://dh8fuj0p7mi0i" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_NormalGL.jpg" id="4_ckoqq"]
 [ext_resource type="Texture2D" uid="uid://db7fo4h2156k5" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_Roughness.jpg" id="5_st0o6"]
+[ext_resource type="Texture2D" uid="uid://bwo5f5g7fafy6" path="res://textures/Carpet006_1K-JPG/Carpet006_1K_Displacement.jpg" id="5_un5ch"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01g3r"]
 albedo_texture = ExtResource("3_iaivl")
+metallic_specular = 0.1
+roughness = 0.95
 roughness_texture = ExtResource("5_st0o6")
 normal_enabled = true
+normal_scale = 1.5
 normal_texture = ExtResource("4_ckoqq")
+ao_texture = ExtResource("4_3k8do")
+heightmap_scale = 2.0
+heightmap_texture = ExtResource("5_un5ch")
 uv1_scale = Vector3(16, 16, 16)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cvl74"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lpwut"]
-size = Vector3(488.341, 61.1024, 1)
+size = Vector3(265.637, 61.1024, 6.27677)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chkpx"]
+size = Vector3(18.8619, 29.587, 6.14551)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bvs8s"]
 render_priority = 0
@@ -46,8 +57,20 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.031938, 1.85224, -51
 shape = SubResource("WorldBoundaryShape3D_cvl74")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -257.354)
+transform = Transform3D(0.999986, 0, 0.00523596, 0, 1, 0, -0.00523596, 0, 0.999986, -142.868, 0, -256.492)
 shape = SubResource("BoxShape3D_lpwut")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D" index="2"]
+transform = Transform3D(0.999986, 0, 0.00523596, 0, 1, 0, -0.00523596, 0, 0.999986, 141.937, 0, -257.184)
+shape = SubResource("BoxShape3D_lpwut")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="StaticBody3D" index="3"]
+transform = Transform3D(0.628017, 0, -0.778199, 0, 1, 0, 0.778199, 0, 0.628017, 7.12587, 0, -263.443)
+shape = SubResource("BoxShape3D_chkpx")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="StaticBody3D" index="4"]
+transform = Transform3D(-0.699127, 0, -0.714998, 0, 1, 0, 0.714998, 0, -0.699127, -8.0921, 7.62939e-06, -263.123)
+shape = SubResource("BoxShape3D_chkpx")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 5.56395, -179.693)
